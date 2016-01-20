@@ -1,0 +1,133 @@
+<TDAS>
+
+# ----------------------------------------------------------------------------------------
+# tranDCT inter-coefficients dependencies analysis script
+# ----------------------------------------------------------------------------------------
+# this is a sample .tds file explaining how it works
+# comments are written after '#'
+# first line of the file must be '<TDAS>'
+
+
+# ----------------------------------------------------------------------------------------
+# the following (in [] brackets) are general settings
+# they can be anywhere in the file, for convenience they are right here on top of the file
+# ----------------------------------------------------------------------------------------
+
+# uncomment if a generic gnuplot .plt file accompanying the .csv file should also be written
+
+# [wrt_gplt]
+
+
+# 'missing' lines are lines where one or more values are not available due to image borders
+# uncomment the following to also include these lines in the .csv
+
+# [inc_incp]
+
+
+# if 'missing' lines should be commented out with '#' in the .csv uncomment the following
+# of course, this only makes sense, if '[inc_incp]' (see above) is active
+
+# [cmt_incp]
+
+
+# if a checklist showing which lines are 'missing' should be included uncomment this
+# the checklist appears as last column in the .csv - 0 means 'missing', 1 means complete
+# again, there is only sense in this if '[inc_incp]' (see above) is active
+
+# [inc_chkl]
+
+
+# uncomment this if a description of each row in the table should be included
+# descriptions are included as first column
+
+# [inc_desc]
+
+
+# uncomment if names of columns should be included as well
+# this makes only sense if names are defined for each column below
+
+# [inc_name]
+
+
+# uncomment if lengths of each column should be checked and compared with each other
+# in general each column should have same length, otherwise there might be something wrong
+
+# [chk_ssiz]
+
+
+# ----------------------------------------------------------------------------------------
+# here rules for generation of each column are defined
+# again, this can be anywhere in the file
+# ----------------------------------------------------------------------------------------
+
+# each column must be opened by '[COL]' and closed by '[/COL]'
+# rules are defined in between
+
+
+# the following defines a rule to make a column consisting of each (0,1) coefficient
+# in a 8x8 dct transformed image
+
+[COL]
+
+# this is the name of the column, which is purely optional
+# it is only used if [inc_name] (see above) is set
+
+nam "current"
+
+# this defines the X/Y block size for the transforming DCT
+ 
+bls 8x8
+
+# this defines the step size in x/y direction
+# if each block should be included in both directions, use '1/1'
+# if, in x direction, only each second block should be included, use '2/1',
+# if, in y direction, only each second block should be included, use '1/2' ...
+
+stp 1/1
+
+# this defines, which coeffcient relative to each block in the image should be included
+# the 1st ?/? define the relative x/y position of the block to get the coefficient from
+# the 2nd ?/? define the absolute u/v position of the coefficient inside the block
+# if you want to get the (0,1) coefficient from the current block, use 0/0/0/1
+
+get 0/0/0/1
+
+# if you want to get an average of a range of coefficients use 'til'
+# 'til' is optional, but it shouldn't be defined before 'get'
+
+til 0/0/0/1
+
+[/COL]
+
+
+# the following defines a rule to make a column consisting of each (0,1) coefficient
+# of a left side neighbouring block in a 8x8 dct transformed image
+
+[COL]
+nam "left"
+bls 8x8
+stp 1/1
+get -1/0/0/1
+[/COL]
+
+
+# the following defines a rule to make a column consisting of each 8th (in x direction)
+# (0,1) coefficient of a left side neighbouring block in a 1x8 dct transformed image
+
+[COL]
+nam "left7"
+bls 1x8
+stp 8/1
+get -1/0/0/1
+[/COL]
+
+
+# the following defines a rule to make a column consisting of each 4th (in x direction)
+# (0,1) coefficient of a left side neighbouring block in a 2x8 dct transformed image
+
+[COL]
+nam "left3"
+bls 2x8
+stp 4/1
+get -1/0/0/1
+[/COL]
