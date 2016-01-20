@@ -705,7 +705,7 @@ bool check_file( void )
 	fgets( inp, 255, fp ); // image id
 	
 	// check file id, determine filetype
-	if ( strncmp( inp, "P5", 2 ) == 0 ) { //(inp[0] == 'P') && (inp[1] == '5') ) {
+	if ( strncmp( inp, "P5", 2 ) == 0 ) {
 		// file is PGM
 		in_format = PGM;
 		
