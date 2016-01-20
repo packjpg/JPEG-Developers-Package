@@ -340,7 +340,7 @@ void showhelp( void )
 {
 	printf( "Usage: makepgm [switches] [filename]\n" );
 	printf( "\n" );
-	printf( "   [-hd??] -> subtract ?? byte from begin of data\n" );
+	printf( "   [-hd??] -> remove ?? byte from begin of data\n" );
 	printf( "   [-w???] -> fixed width for image, must be > 0\n" );
 	printf( "   [-h???] -> fixed height for image, must be > 0\n" );
 	printf( "   [-a?:?] -> fixed aspect ratio, must be > 0\n" );
@@ -463,14 +463,25 @@ bool conv_raw( void )
 {
 	signed int sval;
 	unsigned int uval;
-	int scs; // linear scale factor
+	signed int smax = 0;
+	unsigned int umax = 0;
+	double scs; // linear scale factor
 	double scl; // logarithmic scale factor
 	int i;
 	
 	
-	if ( vsigned ) { // if value is signed
+	// find out signed and unsigned max
+	for ( i = 0; i < imgsize; i++ ) {
+		uval = get_uval( &(rawdata[ i * bpv ]) );
+		sval = ( uval >= middle ) ? ( uval - range - 1 ) : uval;
+		if ( umax < uval ) umax = uval;
+		if ( smax < ABS(sval) ) smax = ABS(sval);
+	}
 	
-		scs = ( 1 << ((bpv - 1) * 8) );
+	if ( vsigned ) { // if value is signed
+		
+		// scs = ( 1 << ((bpv - 1) * 8) );
+		scs = smax / 127.0; 
 		scl = 128.0 / ( bpv * log2( 128.0 ) );
 		
 		for ( i = 0; i < imgsize; i++ )
@@ -499,7 +510,7 @@ bool conv_raw( void )
 	}
 	else { // if value is not signed
 	
-		scs = ( 1 << ((bpv - 1) * 8) );
+		scs = smax / 255.0;
 		scl = 256.0 / ( bpv * log2( 256.0 ) );
 		
 		for ( i = 0; i < imgsize; i++ )
