@@ -167,8 +167,8 @@ float idct_2d_fst_8x1( int cmp, int dpos, int ix, int iy );
 	function declarations: miscelaneous helpers
 	----------------------------------------------- */
 
-char* create_filename( char* base, char* extension );
-void set_extension( char* destination, char* origin, char* extension );
+char* create_filename( const char* base, const char* extension );
+void set_extension( char* destination, const char* origin, const char* extension );
 void add_underscore( char* filename );
 
 
@@ -181,7 +181,7 @@ void add_underscore( char* filename );
 bool write_hdr( void );
 bool write_huf( void );
 bool write_coll( void );
-bool write_file( char* base, char* ext, void* data, int bpv, int size );
+bool write_file( const char* base, const char* ext, void* data, int bpv, int size );
 bool write_errfile( void );
 bool write_info( void );
 bool write_pgm( void );
@@ -485,7 +485,7 @@ void initialize_options( int argc, char** argv )
 				setmode( fileno( stdout ), O_BINARY );
 			#endif
 			// use "-" as placeholder for stdin
-			*(tmp_flp++) = "-";
+			*(tmp_flp++) = (char*) "-";
 		}
 		else {
 			// if argument is not switch, it's a filename
@@ -520,7 +520,7 @@ void process_file( void )
 	// compare file name, set pipe if needed
 	if ( ( strcmp( filelist[ file_no ], "-" ) == 0 ) && ( action == comp ) ) {
 		pipe_on = true;
-		filelist[ file_no ] = "STDIN";
+		filelist[ file_no ] = (char*) "STDIN";
 	}
 	else {		
 		pipe_on = false;
@@ -535,30 +535,30 @@ void process_file( void )
 	execute( check_file );
 	
 	// get specific action message
-	if ( filetype == UNK ) actionmsg = "unknown filetype";
+	if ( filetype == UNK ) actionmsg = (char*) "unknown filetype";
 	else switch ( action )
 	{
 		case comp:
 			if ( filetype == JPEG )
-				actionmsg = "Expanding";
+				actionmsg = (char*) "Expanding";
 			else
-				actionmsg = "Compressing";
+				actionmsg = (char*) "Compressing";
 			break;
 			
 		case split:
-			actionmsg = "Splitting";
+			actionmsg = (char*) "Splitting";
 			break;
 			
 		case coll:
-			actionmsg = "Extracting Colls";
+			actionmsg = (char*) "Extracting Colls";
 			break;
 			
 		case info:
-			actionmsg = "Extracting info";
+			actionmsg = (char*) "Extracting info";
 			break;
 		
 		case pgm:
-			actionmsg = "Converting";
+			actionmsg = (char*) "Converting";
 			break;
 	}
 	
@@ -673,10 +673,8 @@ void process_file( void )
 	if ( str_str != NULL ) delete( str_str ); str_str = NULL;
 	// delete if broken or if output not needed
 	if ( ( !pipe_on ) && ( ( errorlevel >= err_tresh ) || ( action != comp ) ) ) {
-		if ( filetype == JPEG )
-			if ( access( ujgfilename, 0 ) == 0 ) remove( ujgfilename );
-		else if ( filetype == UJG )
-			if ( access( jpgfilename, 0 ) == 0 ) remove( jpgfilename );
+		if ( ( filetype == JPEG ) && ( access( ujgfilename, 0 ) == 0 ) ) remove( ujgfilename );
+		else if ( ( filetype == UJG ) && ( access( jpgfilename, 0 ) == 0 ) ) remove( jpgfilename );
 	}
 	// remove temp file
 	if ( ( access( tmpfilename, 0 ) == 0 ) &&
@@ -719,18 +717,18 @@ void process_file( void )
 	switch ( errorlevel )
 	{
 		case 0:
-			errtypemsg = "none";
+			errtypemsg = (char*) "none";
 			break;
 			
 		case 1:
 			if ( errorlevel < err_tresh )
-				errtypemsg = "warning (ignored)";
+				errtypemsg = (char*) "warning (ignored)";
 			else
-				errtypemsg = "warning (skipped file)";
+				errtypemsg = (char*) "warning (skipped file)";
 			break;
 		
 		case 2:
-			errtypemsg = "fatal error";
+			errtypemsg = (char*) "fatal error";
 			break;
 	}
 	
@@ -1393,8 +1391,8 @@ bool decode_jpeg( void )
 		// check if huffman tables are available
 		for ( csc = 0; csc < cs_cmpc; csc++ ) {
 			cmp = cs_cmp[ csc ];
-			if ( ( cs_sal == 0 ) && ( htset[ 0 ][ cmpnfo[cmp].huffdc ] == 0 ) ||
-				 ( cs_sah >  0 ) && ( htset[ 1 ][ cmpnfo[cmp].huffac ] == 0 ) ) {
+			if ( ( ( cs_sal == 0 ) && ( htset[ 0 ][ cmpnfo[cmp].huffdc ] == 0 ) ) ||
+				 ( ( cs_sah >  0 ) && ( htset[ 1 ][ cmpnfo[cmp].huffac ] == 0 ) ) ) {
 				sprintf( errormessage, "huffman table missing in scan%i", scnc );
 				delete huffr;
 				errorlevel = 2;
@@ -4022,7 +4020,7 @@ float idct_2d_fst_1x8( int cmp, int dpos, int ix, int iy )
 /* -----------------------------------------------
 	creates filename, callocs memory for it
 	----------------------------------------------- */	
-char* create_filename( char* base, char* extension )
+char* create_filename( const char* base, const char* extension )
 {
 	int len = strlen(base);
 	int tol = 8;
@@ -4036,7 +4034,7 @@ char* create_filename( char* base, char* extension )
 /* -----------------------------------------------
 	changes extension of filename
 	----------------------------------------------- */	
-void set_extension( char* destination, char* origin, char* extension )
+void set_extension( char* destination, const char* origin, const char* extension )
 {
 	int i;
 	
@@ -4101,8 +4099,8 @@ void add_underscore( char* filename )
 	----------------------------------------------- */
 bool write_hdr( void )
 {
-	char* ext = "hdr";
-	char* basename = basfilename;
+	const char* ext = "hdr";
+	const char* basename = basfilename;
 	
 	if ( !write_file( basename, ext, hdrdata, 1, hdrs ) )
 		return false;	
@@ -4116,8 +4114,8 @@ bool write_hdr( void )
 	----------------------------------------------- */
 bool write_huf( void )
 {
-	char* ext = "huf";
-	char* basename = basfilename;
+	const char* ext = "huf";
+	const char* basename = basfilename;
 	
 	if ( !write_file( basename, ext, huffdata, 1, hufs ) )
 		return false;
@@ -4134,16 +4132,10 @@ bool write_coll( void )
 	FILE* fp;
 	
 	char* fn;
-	char* ext[4];
-	char* base;
+	const char* ext[4] = { "coll0", "coll1", "coll2", "coll3" };
+	const char* base = basfilename;
 	int cmp, bpos, dpos;
 	int i, j;
-	
-	ext[0] = "coll0";
-	ext[1] = "coll1";
-	ext[2] = "coll2";
-	ext[3] = "coll3";
-	base = basfilename;
 	
 	
 	for ( cmp = 0; cmp < cmpc; cmp++ ) {
@@ -4211,7 +4203,7 @@ bool write_coll( void )
 /* -----------------------------------------------
 	Writes to file
 	----------------------------------------------- */
-bool write_file( char* base, char* ext, void* data, int bpv, int size )
+bool write_file( const char* base, const char* ext, void* data, int bpv, int size )
 {	
 	FILE* fp;
 	char* fn;
@@ -4372,18 +4364,12 @@ bool write_pgm( void )
 	
 	FILE* fp;
 	char* fn;
-	char* ext[4];
+	const char* ext[4] = { "cmp0.pgm", "cmp1.pgm", "cmp2.pgm", "cmp3.pgm" };
 	
 	int cmp, dpos;
 	int pix_v;
 	int xpos, ypos, dcpos;
 	int x, y;
-	
-	
-	ext[0] = "cmp0.pgm";
-	ext[1] = "cmp1.pgm";
-	ext[2] = "cmp2.pgm";
-	ext[3] = "cmp3.pgm";
 	
 	
 	for ( cmp = 0; cmp < cmpc; cmp++ )
