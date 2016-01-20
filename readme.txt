@@ -139,13 +139,13 @@ http://www.cs.fit.edu/~mmahoney/compression/.
 Contact
 ~~~~~~~
 
-The official home of packJPG:
- http://www.elektronik.htw-aalen.de/packjpg/
+The official developer blog for packJPG:
+ http://packjpg.encode.ru/
  
 For questions and bug reports:
- packjpg (at) htw-aalen.de
-
+ packjpg (at) matthiasstirner.com
+ 
 
 ____________________________________________________
-JPEG Developers Package by Matthias Stirner, 02/2014 
+JPEG Developers Package by Matthias Stirner, 01/2016 
 
