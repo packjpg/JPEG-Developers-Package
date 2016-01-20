@@ -43,8 +43,8 @@ enum PTYPE  { pbm = 4, pgm = 5, ppm = 6 };
 	declarations - program info
 	----------------------------------------------- */
 	
-static char* headline = "--- makepgm v2.0a by Matthias Stirner ---";
-static char* comment = "created by makepgm";
+static const char* headline = "--- makepgm v2.0a by Matthias Stirner ---";
+static const char* comment = "created by makepgm";
 
 
 /* -----------------------------------------------
@@ -239,19 +239,18 @@ void initialize_options( int argc, char** argv )
 	
 	// set bpp & pchar
 	switch ( ptype ) {
-	
 		case pbm:
-			pchar = "pbm";
+			pchar = (char*) "pbm";
 			bpp = 1;
 			break;
 			
 		case pgm:
-			pchar = "pgm";
+			pchar = (char*) "pgm";
 			bpp = 8;
 			break;
 			
 		case ppm:
-			pchar = "ppm";
+			pchar = (char*) "ppm";
 			bpp = 24;
 			break;
 	}

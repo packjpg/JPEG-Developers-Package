@@ -54,7 +54,7 @@ void printcmb( FILE* outf, unsigned int uval, bool sgn );
 	declarations - global variables
 	----------------------------------------------- */
 
-static char* headline = "--- hcheck v2.0 by Matthias Stirner ---";
+static const char* headline = "--- hcheck v2.0 by Matthias Stirner ---";
 
 static bool wait = false;
 char errormessage[256];
@@ -91,8 +91,8 @@ double kpv; // different symbols per symbol
 
 unsigned int gumin = ( unsigned int ) -1; // global umin
 unsigned int gumax = 0; // global umax
-signed int gsmin = ( 1 << 31 ) - 1 ; // global smin
-signed int gsmax = ( 1 << 31 ) * ( -1 ); // global smax
+signed int gsmin = (( 1 << 30 ) - 1); // global smin
+signed int gsmax = (( 1 << 30 ) * ( -1 )); // global smax
 unsigned int urngmax = 0; // maximum range ( unsigned )
 unsigned int srngmax = 0; // maximum range ( signed )
 unsigned int gumdiff = 0; // global maximum difference ( unsigned )
@@ -111,8 +111,8 @@ unsigned int tbsum = 0; // sum of total bytes
 unsigned int tvsum = 0; // sum of total values
 unsigned int pbsum[5] = { 0,0,0,0,0 }; // sum of possible compressed size ( bytes )
 
-char* csvfilename = "hcheck.csv";
-char* csvsep = ";";
+char* csvfilename = (char*) "hcheck.csv";
+const char* csvsep = ";";
 bool wcsv = false;
 bool quiet = false;
 

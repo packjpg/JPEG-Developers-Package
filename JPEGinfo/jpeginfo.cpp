@@ -317,7 +317,7 @@ void initialize_options( int argc, char** argv )
 				setmode( fileno( stdout ), O_BINARY );
 			#endif
 			// use "-" as placeholder for stdin
-			*(tmp_flp++) = "-";
+			*(tmp_flp++) = (char*) "-";
 		}
 		else {
 			// if argument is not switch, it's a filename
@@ -347,7 +347,7 @@ void process_file( void )
 	// compare file name, set pipe if needed
 	if ( strcmp( filelist[ file_no ], "-" ) == 0 ) {
 		pipe_on = true;
-		filelist[ file_no ] = "STDIN";
+		filelist[ file_no ] = (char*) "STDIN";
 	}
 	
 	if ( verbosity == -1 ) { // progress bar UI
@@ -392,8 +392,8 @@ void process_file( void )
 		execute( ( pipe_on ) ? check_stdin : check_file );
 		
 		// get specific action message
-		if ( filetype == UNK ) actionmsg = "unknown filetype";
-		else actionmsg = "Writing info";
+		if ( filetype == UNK ) actionmsg = (char*) "unknown filetype";
+		else actionmsg = (char*) "Writing info";
 		
 		if ( verbosity < 2 ) fprintf( msgout, "%s -> ", actionmsg );
 		
@@ -440,18 +440,18 @@ void process_file( void )
 		switch ( errorlevel )
 		{
 			case 0:
-				errtypemsg = "none";
+				errtypemsg = (char*) "none";
 				break;
 				
 			case 1:
 				if ( errorlevel < err_tresh )
-					errtypemsg = "warning (ignored)";
+					errtypemsg = (char*) "warning (ignored)";
 				else
-					errtypemsg = "warning (skipped file)";
+					errtypemsg = (char*) "warning (skipped file)";
 				break;
 			
 			case 2:
-				errtypemsg = "fatal error";
+				errtypemsg = (char*) "fatal error";
 				break;
 		}
 		
@@ -660,7 +660,7 @@ bool check_stdin( void )
 		// file is JPEG
 		filetype = JPEG;
 		// create filenames
-		jpgfilename = "JPG file from stdin";
+		jpgfilename = (char*) "JPG file from stdin";
 	}
 	else {
 		// file is neither

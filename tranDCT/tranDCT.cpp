@@ -131,8 +131,8 @@ void  block_fdct_2d( unsigned char* f, signed CTYPE* F );
 	----------------------------------------------- */
 
 char* fetch_command( char* text, char* cmd );
-char* create_filename( char* base, char* extension );
-void set_extension( char* destination, char* origin, char* extension );
+char* create_filename( const char* base, const char* extension );
+void set_extension( char* destination, const char* origin, const char* extension );
 void add_underscore( char* filename );
 
 
@@ -296,7 +296,7 @@ int main( int argc, char** argv )
 	speed = (int) ( (double) (( end - begin ) * 1000) / CLOCKS_PER_SEC ); 
 	
 	// show statistics
-	fprintf( msgout,  "\n\n-> %i file(s) processed in %i ms, %i error(s)\n", file_cnt, speed, error_cnt, warn_cnt );
+	fprintf( msgout,  "\n\n-> %i file(s) processed in %i ms, %i error(s), %i warning(s)\n", file_cnt, speed, error_cnt, warn_cnt );
 	
 	
 	return file_cnt;
@@ -422,13 +422,13 @@ void process_file( void )
 		fprintf( msgout,  "\n----------------------------------------" );
 	
 	// check input file and determine filetype
-	actionmsg = "Parsing";
+	actionmsg = (char*) "Parsing";
 	execute( check_file );
 	
 	// get specific action message
-	if ( in_format == UNK ) actionmsg = "unknown filetype";
-	else if ( out_format == CSV ) actionmsg = "Analysing";
-	else if ( in_format != TDS ) actionmsg = "Converting";
+	if ( in_format == UNK ) actionmsg = (char*) "unknown filetype";
+	else if ( out_format == CSV ) actionmsg = (char*) "Analysing";
+	else if ( in_format != TDS ) actionmsg = (char*) "Converting";
 	
 	if ( !verbosity ) fprintf( msgout, "%s -> ", actionmsg );
 	
@@ -501,37 +501,32 @@ void process_file( void )
 	speed = (int) ( (double) (( end - begin ) * 1000) / CLOCKS_PER_SEC );
 
 	
-	switch ( verbosity )
-	{
-		case false:
-			if ( errorlevel < err_tresh ) 
-				fprintf( msgout,  "%i ms", speed );
-			else fprintf( msgout,  "ERROR" );
-			if ( errorlevel > 0 )
-				fprintf( msgout,  "\n" );
-			break;
-		
-		case true:
-			fprintf( msgout,  "\n----------------------------------------\n" );
-			if ( errorlevel < err_tresh ) fprintf( msgout,  "-> %s -> %i ms\n", actionmsg, speed );
-			break;
+	if ( !verbosity ) {
+        if ( errorlevel < err_tresh ) 
+            fprintf( msgout,  "%i ms", speed );
+        else fprintf( msgout,  "ERROR" );
+        if ( errorlevel > 0 )
+            fprintf( msgout,  "\n" );
+    } else {
+        fprintf( msgout,  "\n----------------------------------------\n" );
+        if ( errorlevel < err_tresh ) fprintf( msgout,  "-> %s -> %i ms\n", actionmsg, speed );
 	}
 	
 	switch ( errorlevel )
 	{
 		case 0:
-			errtypemsg = "none";
+			errtypemsg = (char*) "none";
 			break;
 			
 		case 1:
 			if ( errorlevel < err_tresh )
-				errtypemsg = "warning (ignored)";
+				errtypemsg = (char*) "warning (ignored)";
 			else
-				errtypemsg = "warning (skipped file)";
+				errtypemsg = (char*) "warning (skipped file)";
 			break;
 		
 		case 2:
-			errtypemsg = "fatal error";
+			errtypemsg = (char*) "fatal error";
 			break;
 	}
 	
@@ -668,8 +663,8 @@ bool check_file( void )
 {
 	FILE* fp;
 	
-	char* out_ext = "out";
-	char* tmp_ext = "tmp";
+	const char* out_ext = "out";
+	const char* tmp_ext = "tmp";
 	
 	char inp[ 256 ];
 	int namelen = strlen( filelist[ file_no ] ) + 5;
@@ -1715,7 +1710,7 @@ bool write_csv( void )
 			}
 			else fprintf( fp, "%i%c ", coldata[ col ][ row ], CSV_SEP );
 		}
-		if ( inc_chkl ) fprintf( fp, "%i%c ", global_chklist[ row ] );
+		if ( inc_chkl ) fprintf( fp, "%i%c ", global_chklist[ row ], CSV_SEP );
 		fprintf( fp, "\n" );
 	}
 	
@@ -2333,7 +2328,7 @@ char* fetch_command( char* text, char* cmd )
 /* -----------------------------------------------
 	creates filename, callocs memory for it
 	----------------------------------------------- */	
-char* create_filename( char* base, char* extension )
+char* create_filename( const char* base, const char* extension )
 {
 	int len = strlen(base);
 	int tol = 8;
@@ -2347,7 +2342,7 @@ char* create_filename( char* base, char* extension )
 /* -----------------------------------------------
 	changes extension of filename
 	----------------------------------------------- */	
-void set_extension( char* destination, char* origin, char* extension )
+void set_extension( char* destination, const char* origin, const char* extension )
 {
 	int i;
 	
