@@ -115,6 +115,25 @@ files as well. Large file support (LFS) for files larger than 4GB is
 disabled by default but can be enabled by defining "LFS" in the source 
 code. 
 
+modjpg v0.9
+~~~~~~~~~~~
+modJPG works in a similar way to JPEGinfo in that it can process a 
+number of JPEG files and output some basic and advanced information to a 
+CSV file called ‘JPEGinfo.csv’. Additionally there is some 
+functionality to modify existing JPEG files without introducing 
+unnecessary loss. 
+
+Modification functionality in modJPG includes the following:
+o Discard meta information
+o Discard garbage data
+o Strip restart markers
+o Requantize all coefficients with a factor of your choice
+o Modify quantization tables
+
+modJPG was coded from existing packJPG code on request by Prof. Dr. 
+Seelmann of HTW Aalen University. You may freely use it and the included 
+source code under the terms of the BSD. 
+
 
 Acknowledgements
 ~~~~~~~~~~~~~~~~
