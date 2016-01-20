@@ -7,12 +7,7 @@ building their own JPEG recompression applications or as a base for
 other JPEG related projects. These routines were designed from scratch 
 and are also used in packJPG now. Instructions on how to begin your own 
 JPEG recompression algorithm (for anyone interested) are included in the 
-source code. 
-
-Along with the JPEG routines, my most important developer tools are also 
-included in the package. For each included program, compiled executables 
-are provided for Windows NT (32bit) but there shouldn't be any problem 
-compiling the sources for another OS. 
+source code.
 
 
 BSD License
